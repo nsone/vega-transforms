@@ -87,7 +87,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName="none") {
 		for(i = 0; i < incomingLen; i++) {
 			currentHash = incomingArrayOfHashes[i];
 			for (myHeadKey in myArrayHead) {
-			  currentHash[myHeadKey] = myArrayHead[myHeadKey];  // Yes, duplicate key names means clobbering, but we shouldn't have to care.  If we start caring, we can start appending prefixes, but that would be terrible...
+			  currentHash[myHeadKey] = myArrayHead[myHeadKey];  // Yes, duplicate key names means clobbering, but we shouldn't have to care.  If we start caring, we can start prepending prefixes, but that would be terrible...
 			}
 		}
 	}
