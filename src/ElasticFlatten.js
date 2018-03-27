@@ -18,7 +18,7 @@ ElasticFlatten.Definition = {
   "type": "ElasticFlatten",
   "metadata": {"generates": true, "source": true},
   "params": [
-    { "name": "leafnode", "type": "string", "array": false, "required": true }
+	{ "name": "leafnode", "type": "string", "array": false, "required": true }
   ]
 };
 
@@ -26,12 +26,14 @@ var prototype = inherits(ElasticFlatten, Transform);
 
 prototype.transform = function(_, pulse) {
   var out = pulse.fork(pulse.NO_SOURCE),
-      leafnode = fieldNames(fields, _.leafnode);
+	  leafnode = fieldNames(fields, _.leafnode);
 
   // remove any previous results
   out.rem = this.value;
 
-  out.add.push.apply(elasticFlatten(this.value, leafnode));
+  pulse.visit(pulse.SOURCE, function(t) {
+	out.add.push.apply(elasticFlatten(t, leafnode));
+  });
 
   this.value = out.source = out.add;
   return out;
@@ -42,7 +44,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
   var incomingArrayOfHashes = [];
 	var myArrayHead = {};
 
-   	var i = 0;
+	var i = 0;
 
 	if (obj instanceof Array) {
 		var arrLen = obj.length;
@@ -62,12 +64,12 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
 		 * Those buckets will then be given a property called "the_date" that will contain the unix timestamp found in their "key" properties.
 		*/
 
-    if("key" in obj && keyName) {
+	if("key" in obj && keyName) {
 			obj[keyName] = obj.key;
 		}
 
-   		for (hashKey in obj) {
-   			// Short-circuiting another depth of the recursion if we know that the next thing is going to be the node we want.
+		for (hashKey in obj) {
+			// Short-circuiting another depth of the recursion if we know that the next thing is going to be the node we want.
 			if(hashKey == leafNodeProperty) {
 				incomingArrayOfHashes.push(obj[leafNodeProperty]);
 			} else if(obj[hashKey] instanceof Array) {
