@@ -18,35 +18,44 @@ ElasticFlatten.Definition = {
   "type": "ElasticFlatten",
   "metadata": {"generates": true, "source": true},
   "params": [
-    { "name": "leafnode", "type": "string", "array": false, "required": true }
+	{ "name": "leafnode", "type": "string", "array": false, "required": true }
   ]
 };
 
 var prototype = inherits(ElasticFlatten, Transform);
 
 prototype.transform = function(_, pulse) {
+<<<<<<< HEAD
   var out = pulse.fork(pulse.NO_SOURCE),
       leafnode = _.leafnode;
+=======
+	var out = pulse.fork(pulse.NO_SOURCE),
+	leafnode = _.leafnode;
+>>>>>>> 98d5f9cf47b8314c4725b44fd1b4f26eeee54e72
 
-  // remove any previous results
-  out.rem = this.value;
+	// remove any previous results
+	out.rem = this.value;
 
-  this.value = out.source = elasticFlatten(this.value, leafnode);
-  return out;
+	var flattened = elasticFlatten(pulse.source, leafnode);
+
+	out.add.push.apply(flattened);
+
+	this.value = out.source = out.add;
+	return out;
 };
 
 function elasticFlatten(obj, leafNodeProperty, keyName) {
-
-  var incomingArrayOfHashes = [];
+	var incomingArrayOfHashes = [];
 	var myArrayHead = {};
 
-   	var i = 0;
+	var i = 0;
 
 	if (obj instanceof Array) {
 		var arrLen = obj.length;
 
 		for(i = 0; i < arrLen;i++) {
-			incomingArrayOfHashes.push.apply(incomingArrayOfHashes, elasticFlatten.call(this,obj[i], leafNodeProperty, keyName));
+			var flattened = elasticFlatten(obj[i], leafNodeProperty, keyName);
+			incomingArrayOfHashes = incomingArrayOfHashes.concat(flattened);
 		}
 	} else if(obj instanceof Object) {
 		var hashKey;
@@ -60,12 +69,12 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
 		 * Those buckets will then be given a property called "the_date" that will contain the unix timestamp found in their "key" properties.
 		*/
 
-    if("key" in obj && keyName) {
+		if("key" in obj && keyName) {
 			obj[keyName] = obj.key;
 		}
 
-   		for (hashKey in obj) {
-   			// Short-circuiting another depth of the recursion if we know that the next thing is going to be the node we want.
+		for (hashKey in obj) {
+			// Short-circuiting another depth of the recursion if we know that the next thing is going to be the node we want.
 			if(hashKey == leafNodeProperty) {
 				incomingArrayOfHashes.push(obj[leafNodeProperty]);
 			} else if(obj[hashKey] instanceof Array) {
