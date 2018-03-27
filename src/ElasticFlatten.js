@@ -26,7 +26,7 @@ var prototype = inherits(ElasticFlatten, Transform);
 
 prototype.transform = function(_, pulse) {
   var out = pulse.fork(pulse.NO_SOURCE),
-      leafnode = fieldNames(fields, _.leafnode);
+      leafnode = _.leafnode;
 
   // remove any previous results
   out.rem = this.value;
