@@ -25,22 +25,13 @@ ElasticFlatten.Definition = {
 var prototype = inherits(ElasticFlatten, Transform);
 
 prototype.transform = function(_, pulse) {
-<<<<<<< HEAD
-  var out = pulse.fork(pulse.NO_SOURCE),
-      leafnode = _.leafnode;
-=======
 	var out = pulse.fork(pulse.NO_SOURCE),
-	leafnode = _.leafnode;
->>>>>>> 98d5f9cf47b8314c4725b44fd1b4f26eeee54e72
+    	leafnode = _.leafnode;
 
 	// remove any previous results
 	out.rem = this.value;
 
-	var flattened = elasticFlatten(pulse.source, leafnode);
-
-	out.add.push.apply(flattened);
-
-	this.value = out.source = out.add;
+	this.value = out.source = out.add = elasticFlatten(pulse.source, leafnode);
 	return out;
 };
 
