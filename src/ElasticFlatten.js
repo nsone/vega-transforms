@@ -30,9 +30,14 @@ prototype.transform = function(_, pulse) {
 
 	// remove any previous results
 	out.rem = this.value;
+	
+	
 
 	this.value = out.source = out.add = elasticFlatten(pulse.source, leafnode);
-	return out;
+	
+	var alteredFields = fieldNames([leafnode], (out.add.length ? Object.keys(out.add[0]) : []));
+	
+	return out.modifies(alteredFields);
 };
 
 function elasticFlatten(obj, leafNodeProperty, keyName) {
