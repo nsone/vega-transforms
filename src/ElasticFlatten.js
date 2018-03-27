@@ -25,24 +25,22 @@ ElasticFlatten.Definition = {
 var prototype = inherits(ElasticFlatten, Transform);
 
 prototype.transform = function(_, pulse) {
-  var out = pulse.fork(pulse.NO_SOURCE),
-	  leafnode = _.leafnode;
+	var out = pulse.fork(pulse.NO_SOURCE),
+	leafnode = _.leafnode;
 
-  // remove any previous results
-  out.rem = this.value;
+	// remove any previous results
+	out.rem = this.value;
 
-  console.log(pulse.source);
-  var flattened = elasticFlatten(pulse.source, leafnode);
-  console.log(flattened);
-  out.add.push.apply(flattened);
+	var flattened = elasticFlatten(pulse.source, leafnode);
 
-  this.value = out.source = out.add;
-  return out;
+	out.add.push.apply(flattened);
+
+	this.value = out.source = out.add;
+	return out;
 };
 
 function elasticFlatten(obj, leafNodeProperty, keyName) {
-
-  var incomingArrayOfHashes = [];
+	var incomingArrayOfHashes = [];
 	var myArrayHead = {};
 
 	var i = 0;
@@ -51,7 +49,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
 		var arrLen = obj.length;
 
 		for(i = 0; i < arrLen;i++) {
-			incomingArrayOfHashes.push.apply(incomingArrayOfHashes, elasticFlatten.call(this,obj[i], leafNodeProperty, keyName));
+			incomingArrayOfHashes.concat(elasticFlatten(obj[i], leafNodeProperty, keyName));
 		}
 	} else if(obj instanceof Object) {
 		var hashKey;
@@ -65,7 +63,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
 		 * Those buckets will then be given a property called "the_date" that will contain the unix timestamp found in their "key" properties.
 		*/
 
-	if("key" in obj && keyName) {
+		if("key" in obj && keyName) {
 			obj[keyName] = obj.key;
 		}
 
