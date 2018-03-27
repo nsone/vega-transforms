@@ -35,7 +35,7 @@ prototype.transform = function(_, pulse) {
   return out;
 };
 
-function elasticFlatten(obj, leafNodeProperty, keyName="none") {
+function elasticFlatten(obj, leafNodeProperty, keyName) {
 	var incomingArrayOfHashes = [];
 	var myArrayHead = {};
 
@@ -59,7 +59,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName="none") {
 		 * Those buckets will then be given a property called "the_date" that will contain the unix timestamp found in their "key" properties.
 		*/
 		
-		if("key" in obj) {
+		if("key" in obj && keyName) {
 			obj[keyName] = obj.key;
 		}
 		
