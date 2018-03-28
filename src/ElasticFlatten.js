@@ -51,6 +51,8 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
 
 		for(i = 0; i < arrLen;i++) {
 			var flattened = elasticFlatten(obj[i], leafNodeProperty, keyName);
+			 // Whether this is the best or not for speed seems quite browser-specific, with chrome favoring concat: https://jsperf.com/multi-array-concat/7
+			 // Oddly, another for-loop here seems to be the most predictable across browsers.
 			incomingArrayOfHashes = incomingArrayOfHashes.concat(flattened);
 		}
 	} else if(obj instanceof Object) {
