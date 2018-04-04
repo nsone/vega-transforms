@@ -1,5 +1,5 @@
 import {fieldNames} from './util/util';
-import {derive, Transform} from 'vega-dataflow';
+import {ingest, Transform} from 'vega-dataflow';
 import {inherits} from 'vega-util';
 
 /**
@@ -32,8 +32,14 @@ prototype.transform = function(_, pulse) {
 	out.rem = this.value;
 	
 	
-
-	this.value = out.source = out.add = elasticFlatten(pulse.source, leafnode);
+	var flattenedData = elasticFlatten(pulse.source, leafnode);
+	var fltDataLen = flattenedData.length;
+	
+	for(var i = 0; i < fltDataLen; i++) {
+		ingest(flattenedData[i]);
+	}		
+	
+	this.value = out.source = out.add = flattenedData
 	
 	// Not entirely sure we need this.  We seem to get the same results by just returning out without further operations.
 	// It might be needed depending on what get's done after this transform is used, but that's unknown at the moment. :D
