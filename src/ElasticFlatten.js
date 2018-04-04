@@ -30,16 +30,8 @@ prototype.transform = function(_, pulse) {
 
 	// remove any previous results
 	out.rem = this.value;
-	
-	
-	var flattenedData = elasticFlatten(pulse.source, leafnode);
-	var fltDataLen = flattenedData.length;
-	
-	for(var i = 0; i < fltDataLen; i++) {
-		ingest(flattenedData[i]);
-	}		
-	
-	this.value = out.source = out.add = flattenedData
+
+	this.value = out.source = out.add = elasticFlatten(pulse.source, leafnode);
 	
 	// Not entirely sure we need this.  We seem to get the same results by just returning out without further operations.
 	// It might be needed depending on what get's done after this transform is used, but that's unknown at the moment. :D
@@ -81,7 +73,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName) {
 		for (hashKey in obj) {
 			// Short-circuiting another depth of the recursion if we know that the next thing is going to be the node we want.
 			if(hashKey == leafNodeProperty) {
-				incomingArrayOfHashes.push(obj[leafNodeProperty]);
+				incomingArrayOfHashes.push(ingest(obj[leafNodeProperty])); // ingest() is a vega thing.  Doing it here so that we don't have to re-loop through everything later to ingest the entries.
 			} else if(obj[hashKey] instanceof Array) {
 				incomingArrayOfHashes = elasticFlatten(obj[hashKey], leafNodeProperty, keyName); // If it's an array, then they'll inherit the key name of the parent hash.
 			} else if(obj[hashKey] instanceof Object) {
