@@ -41,7 +41,7 @@ prototype.transform = function(_, pulse) {
 		ignores[ignorefields[i]] = true;
 	}
 
-	this.value = out.source = out.add = elasticFlatten(pulse.source, leafnode, noclobber, ignores);
+	this.value = out.source = out.add = elasticFlatten(pulse.source, leafnode, "", noclobber, ignores);
 	
 	// Not entirely sure we need this.  We seem to get the same results by just returning out without further operations.
 	// It might be needed depending on what get's done after this transform is used, but that's unknown at the moment. :D
