@@ -8,6 +8,8 @@ import {inherits} from 'vega-util';
  * @param {object} params - The parameters for this operator.
  * @param {string} [params.leafnode] - The hash/dict at the deepest
  *   aggregation level that holds the values that you want to graph.
+ * @param {boolean} [params.noclobber] - Boolean that describes whether agg name should be prepended to keys to avoid clobbering values as flattening happens 
+ * @param {string} [params.ignorefields] - An array of strings of fields that should be ignored.
  */
 
 export default function ElasticFlatten(params) {
@@ -90,7 +92,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName, noclobber, ignores) {
 				incomingArrayOfHashes = elasticFlatten(obj[hashKey], leafNodeProperty, hashKey, noclobber, ignores); // If it's a hash, then pass along its "name" to the next level of recursion.
 			} else {
 				// We only want to ignore things that aren't potential containers of leafNodeProperty to prevent people from shooting themselves in the foot, even though they could find other ways.
-				// We also only ignore things that are not present IN target leaf nodes.
+				// We also only ignore things that are not present IN target leaf nodes, whether this is 100% true depends on whether noclobber is used since fields could still be tossed out as recursion rolls back.
 				if(!ignores[hashKey]) {
 					myArrayHead[hashKey] = obj[hashKey];
 				}
