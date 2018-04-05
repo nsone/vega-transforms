@@ -108,7 +108,7 @@ function elasticFlatten(obj, leafNodeProperty, keyName, noclobber, ignores) {
 		for(i = 0; i < incomingLen; i++) {
 			currentHash = incomingArrayOfHashes[i];
 			for (myHeadKey in myArrayHead) {
-				if(noclobber && keyName && (myHeadKey in currentHash)) {
+				if(noclobber && keyName != myHeadKey && (myHeadKey in currentHash)) {
 					currentHash[keyName + "_" + myHeadKey] = myArrayHead[myHeadKey];
 				} else {
 					currentHash[myHeadKey] = myArrayHead[myHeadKey];
